@@ -95,11 +95,9 @@ document.addEventListener("DOMContentLoaded", function () {
             const isActive = item.classList.contains('active');
             faqItems.forEach(i => {
                 i.classList.remove('active');
-                i.querySelector('.icon').textContent = '⌄';
             });
             if (!isActive) {
                 item.classList.add('active');
-                item.querySelector('.icon').textContent = '⌃';
             }
         });
     });
