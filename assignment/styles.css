@@ -234,13 +234,16 @@ section {
 /* Zoom Lens */
 .zoom-lens {
     position: absolute;
-    border: 1px solid #d4d4d8;
-    background-color: rgba(255, 255, 255, 0.4);
-    width: 150px;
-    height: 150px;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    background-color: rgba(0, 0, 0, 0.15);
+    width: 160px;
+    height: 160px;
     cursor: crosshair;
     display: none;
     pointer-events: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
 }
 .zoom-result {
     position: absolute;
@@ -249,12 +252,12 @@ section {
     width: 500px;
     height: 500px;
     border: 1px solid #e5e7eb;
-    background-color: #fff;
+    background-color: #f9fafb;
     display: none;
     z-index: 100;
     background-repeat: no-repeat;
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    border-radius: 12px;
 }
 
 /* Details */

@@ -1,71 +1,90 @@
 // Selectors
-const mainImage =getElementById("mainImage");
-const zoomLens = document.getElementById("mainImageContainer");
-const zoomResult = document.getElementById("zoomResult");
-
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
     const mainImage = document.getElementById('mainImage');
     const zoomContainer = document.getElementById('mainImageContainer');
-    const lens = document.getElementById('zoomLens');
     const result = document.getElementById('zoomResult');
+    const lens = document.getElementById('zoomLens');
+    let isZoomed = false;
 
-    if (mainImage && zoomContainer && lens && result) {
-        // Prepare zoom result background
-        result.style.backgroundImage = `url(${mainImage.src})`;
-        // Default box size for zoom
-        result.style.backgroundSize = `${mainImage.width * 2}px ${mainImage.height * 2}px`;
+    if (mainImage && zoomContainer && result && lens) {
+        // Create zoom effect on hover
+        zoomContainer.addEventListener("mouseenter", function () {
+            lens.style.display = 'flex'; // Centering the SVG inside
+        });
 
-        zoomContainer.addEventListener("mousemove", moveLens);
-        zoomContainer.addEventListener("mouseenter", showLens);
-        zoomContainer.addEventListener("mouseleave", hideLens);
-
-        function moveLens(e) {
-            e.preventDefault();
-            
-            // Get position of image
-            const { left, top, width, height } = mainImage.getBoundingClientRect();
-            
-            // Adjust zoom result size
-            result.style.backgroundSize = `${width * 2.5}px ${height * 2.5}px`;
-
-            // Calculate cursor X and Y
-            let x = e.clientX - left - lens.offsetWidth / 2;
-            let y = e.clientY - top - lens.offsetHeight / 2;
-            
-            // Prevent going out of bounds
-            if (x > width - lens.offsetWidth) {
-                x = width - lens.offsetWidth;
-            } else if (x < 0) {
-                x = 0;
-            }
-            if (y > height - lens.offsetHeight) {
-                y = height - lens.offsetHeight;
-            } else if (y < 0) {
-                y = 0;
-            }
-            
-            // Move lens
-            lens.style.left = x + "px";
-            lens.style.top = y + "px";
-            
-            // Move background in result
-            let backgroundX = (x / width) * 100;
-            let backgroundY = (y / height) * 100;
-            
-            result.style.backgroundPosition = `${backgroundX}% ${backgroundY}%`;
-        }
-        
-        function showLens() {
-            if(window.innerWidth > 1024) {
-                lens.style.display = 'block';
+        // Click to toggle zoom pane
+        zoomContainer.addEventListener("click", function (e) {
+            if (e.target.closest('.carousel-arrow')) return;
+            isZoomed = !isZoomed;
+            if (isZoomed) {
+                result.style.backgroundImage = `url(${mainImage.src})`;
                 result.style.display = 'block';
-                result.style.backgroundImage = `url(${mainImage.src})`; // Fix image
+                moveZoom(e); // Initialize position
+            } else {
+                result.style.display = 'none';
             }
-        }
-        
-        function hideLens() {
-            lens.style.display = 'none';
+        });
+
+        zoomContainer.addEventListener("mousemove", function (e) {
+            moveLensOnly(e);
+            if (isZoomed) {
+                moveZoom(e);
+            }
+        });
+
+        zoomContainer.addEventListener("mouseleave", function () {
             result.style.display = 'none';
+            lens.style.display = 'none';
+            isZoomed = false;
+        });
+
+        function moveLensOnly(e) {
+            const { left, top, width, height } = mainImage.getBoundingClientRect();
+            let x = e.clientX - left;
+            let y = e.clientY - top;
+            let lensX = x - (lens.offsetWidth / 2);
+            let lensY = y - (lens.offsetHeight / 2);
+
+            if (lensX < 0) lensX = 0;
+            if (lensY < 0) lensY = 0;
+            if (lensX > width - lens.offsetWidth) lensX = width - lens.offsetWidth;
+            if (lensY > height - lens.offsetHeight) lensY = height - lens.offsetHeight;
+
+            lens.style.left = `${lensX}px`;
+            lens.style.top = `${lensY}px`;
+        }
+
+        function moveZoom(e) {
+            e.preventDefault();
+
+            const { left, top, width, height } = mainImage.getBoundingClientRect();
+
+            // Scaling ratios
+            const cx = result.offsetWidth / lens.offsetWidth;
+            const cy = result.offsetHeight / lens.offsetHeight;
+
+            // Adjust result background size
+            result.style.backgroundSize = `${width * cx}px ${height * cy}px`;
+
+            // Calculate cursor relative X and Y inside the image
+            let x = e.clientX - left;
+            let y = e.clientY - top;
+
+            // Ensure lens doesn't go out of bounds
+            let lensX = x - (lens.offsetWidth / 2);
+            let lensY = y - (lens.offsetHeight / 2);
+
+            if (lensX < 0) lensX = 0;
+            if (lensY < 0) lensY = 0;
+            if (lensX > width - lens.offsetWidth) lensX = width - lens.offsetWidth;
+            if (lensY > height - lens.offsetHeight) lensY = height - lens.offsetHeight;
+
+            // Position the lens
+            lens.style.left = `${lensX}px`;
+            lens.style.top = `${lensY}px`;
+
+            // Position the background result
+            result.style.backgroundPosition = `-${lensX * cx}px -${lensY * cy}px`;
         }
     }
 
@@ -85,27 +104,21 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     });
 
-    // Sticky Header Logic
-    const stickyHeader = document.getElementById('stickyHeader');
-    window.addEventListener('scroll', () => {
-        // Show after first fold (assumed around 800px or full screen height)
-        if (window.scrollY > 600) {
-            stickyHeader.classList.add('show');
-        } else {
-            stickyHeader.classList.remove('show');
-        }
-    });
-
     // Applications carousel swipe/buttons
     const appCarousel = document.getElementById('appCarousel');
     const scrollAmount = 300;
-    
-    document.querySelector('.prev-app').addEventListener('click', () => {
-        appCarousel.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
-    });
-    document.querySelector('.next-app').addEventListener('click', () => {
-        appCarousel.scrollBy({ left: scrollAmount, behavior: 'smooth' });
-    });
+
+    const prevApp = document.querySelector('.prev-app');
+    const nextApp = document.querySelector('.next-app');
+
+    if (prevApp && nextApp && appCarousel) {
+        prevApp.addEventListener('click', () => {
+            appCarousel.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+        });
+        nextApp.addEventListener('click', () => {
+            appCarousel.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+        });
+    }
 });
 
 // Gallery Thumbnails
@@ -114,27 +127,33 @@ const images = [
     "https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?auto=format&fit=crop&q=80&w=800",
     "https://images.unsplash.com/photo-1531265726475-52ad60219627?auto=format&fit=crop&q=80&w=800",
     "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80&w=800",
-    "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&q=80&w=800"
+    "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&q=80&w=800",
+    "https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?auto=format&fit=crop&q=80&w=800"
 ];
 let currentImageIndex = 0;
 
 function setImage(index) {
     currentImageIndex = index;
     const mainImgNode = document.getElementById('mainImage');
-    mainImgNode.src = images[index];
-    
+    if (mainImgNode) mainImgNode.src = images[index];
+
+    const result = document.getElementById('zoomResult');
+    if (result) result.style.backgroundImage = `url(${images[index]})`;
+
     document.querySelectorAll('.thumb').forEach((thumb, i) => {
         thumb.classList.toggle('active', i === index);
     });
 }
 
-function prevImage() {
+function prevImage(e) {
+    if (e) e.stopPropagation();
     let newIndex = currentImageIndex - 1;
     if (newIndex < 0) newIndex = images.length - 1;
     setImage(newIndex);
 }
 
-function nextImage() {
+function nextImage(e) {
+    if (e) e.stopPropagation();
     let newIndex = currentImageIndex + 1;
     if (newIndex >= images.length) newIndex = 0;
     setImage(newIndex);
@@ -142,15 +161,17 @@ function nextImage() {
 
 // Modal Logic
 function openModal(id) {
-    document.getElementById(id).style.display = 'flex';
+    const modal = document.getElementById(id);
+    if (modal) modal.style.display = 'flex';
 }
 
 function closeModal(id) {
-    document.getElementById(id).style.display = 'none';
+    const modal = document.getElementById(id);
+    if (modal) modal.style.display = 'none';
 }
 
 // Close modal on outside click
-window.onclick = function(event) {
+window.onclick = function (event) {
     if (event.target.classList.contains('modal-overlay')) {
         event.target.style.display = "none";
     }
