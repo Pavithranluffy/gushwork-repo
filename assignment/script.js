@@ -380,3 +380,41 @@ window.addEventListener('load', () => {
         imgEl.style.transition = 'opacity 0.2s ease';
     }
 });
+
+// Testimonials Carousel Drag-to-Scroll Functionality
+const testimonialCarousel = document.getElementById('testimonialCarousel');
+
+if (testimonialCarousel) {
+    let isDown = false;
+    let startX;
+    let scrollLeft;
+
+    testimonialCarousel.addEventListener('mousedown', (e) => {
+        isDown = true;
+        testimonialCarousel.classList.add('active');
+        testimonialCarousel.style.cursor = 'grabbing';
+        testimonialCarousel.style.scrollSnapType = 'none'; // Disable snapping during drag
+        startX = e.pageX - testimonialCarousel.offsetLeft;
+        scrollLeft = testimonialCarousel.scrollLeft;
+    });
+
+    testimonialCarousel.addEventListener('mouseleave', () => {
+        isDown = false;
+        testimonialCarousel.style.cursor = 'grab';
+        testimonialCarousel.style.scrollSnapType = 'x mandatory'; // Re-enable snapping
+    });
+
+    testimonialCarousel.addEventListener('mouseup', () => {
+        isDown = false;
+        testimonialCarousel.style.cursor = 'grab';
+        testimonialCarousel.style.scrollSnapType = 'x mandatory'; // Re-enable snapping
+    });
+
+    testimonialCarousel.addEventListener('mousemove', (e) => {
+        if (!isDown) return;
+        e.preventDefault();
+        const x = e.pageX - testimonialCarousel.offsetLeft;
+        const walk = (x - startX) * 2; // Scroll speed
+        testimonialCarousel.scrollLeft = scrollLeft - walk;
+    });
+}
