@@ -121,7 +121,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 // Gallery Thumbnails
 const images = [
-    "https://images.unsplash.com/photo-1544551763-46a0121087dd?auto=format&fit=crop&q=80&w=800",
+    "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&q=80&w=800",
     "https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?auto=format&fit=crop&q=80&w=800",
     "https://images.unsplash.com/photo-1531265726475-52ad60219627?auto=format&fit=crop&q=80&w=800",
     "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80&w=800",
@@ -423,21 +423,21 @@ if (testimonialCarousel) {
 document.addEventListener('DOMContentLoaded', () => {
     const mainHeader = document.getElementById('mainHeader');
     const heroSection = document.getElementById('hero');
-    
+
     if (mainHeader && heroSection) {
         // Clone the header to create the sticky version
         const stickyHeader = mainHeader.cloneNode(true);
         stickyHeader.id = 'stickyHeader';
         stickyHeader.classList.add('sticky-navbar');
         stickyHeader.classList.remove('main-navbar');
-        
+
         // Append to body so it sits perfectly fixed at the top
         document.body.appendChild(stickyHeader);
 
         // Scroll listener to toggle visibility based on hero section height (the first fold)
         window.addEventListener('scroll', () => {
             const heroBottom = heroSection.getBoundingClientRect().bottom + window.scrollY;
-            
+
             // If we have scrolled past the hero section, show the sticky header
             if (window.scrollY > heroBottom) {
                 stickyHeader.classList.add('visible');
