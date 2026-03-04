@@ -418,3 +418,32 @@ if (testimonialCarousel) {
         testimonialCarousel.scrollLeft = scrollLeft - walk;
     });
 }
+
+// Sticky Header Implementation
+document.addEventListener('DOMContentLoaded', () => {
+    const mainHeader = document.getElementById('mainHeader');
+    const heroSection = document.getElementById('hero');
+    
+    if (mainHeader && heroSection) {
+        // Clone the header to create the sticky version
+        const stickyHeader = mainHeader.cloneNode(true);
+        stickyHeader.id = 'stickyHeader';
+        stickyHeader.classList.add('sticky-navbar');
+        stickyHeader.classList.remove('main-navbar');
+        
+        // Append to body so it sits perfectly fixed at the top
+        document.body.appendChild(stickyHeader);
+
+        // Scroll listener to toggle visibility based on hero section height (the first fold)
+        window.addEventListener('scroll', () => {
+            const heroBottom = heroSection.getBoundingClientRect().bottom + window.scrollY;
+            
+            // If we have scrolled past the hero section, show the sticky header
+            if (window.scrollY > heroBottom) {
+                stickyHeader.classList.add('visible');
+            } else {
+                stickyHeader.classList.remove('visible');
+            }
+        });
+    }
+});

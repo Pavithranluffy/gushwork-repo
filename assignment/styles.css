@@ -1812,3 +1812,30 @@ section {
         gap: 16px;
     }
 }
+
+/* Sticky Navbar Styles */
+.sticky-navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    background: #ffffff;
+    box-shadow: 0 4px 10px -2px rgba(0,0,0,0.1);
+    transform: translateY(-100%);
+    transition: transform 0.3s ease-in-out;
+}
+
+.sticky-navbar.visible {
+    transform: translateY(0);
+}
+
+/* Ensure body doesn't jump when sticky appears by preserving the original header's space in flow,
+   which is natural because we are cloning it, not making the original fixed. */
+
+/* Small adjustments to `.main-navbar` styling based on the new screenshot */
+.main-navbar {
+    padding: 15px 0;
+    border-bottom: 1px solid #e5e7eb;
+    background: #ffffff;
+}
