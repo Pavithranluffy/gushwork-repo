@@ -1371,3 +1371,72 @@ section {
         width: 100%;
     }
 }
+
+/* Resources Section */
+.resources-card {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+}
+
+.resource-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 24px 32px;
+    border-bottom: 1px solid #e5e7eb;
+    transition: background-color 0.2s ease;
+}
+
+.resource-item:last-child {
+    border-bottom: none;
+}
+
+.resource-item:hover {
+    background-color: #f8fafc;
+}
+
+.resource-title {
+    font-size: 1.05rem;
+    font-weight: 500;
+    color: #374151;
+}
+
+.resource-download {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #2b3d86;
+    font-weight: 600;
+    font-size: 0.95rem;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.resource-download:hover {
+    color: #1e2b5e;
+}
+
+/* Responsiveness for Resources Section */
+@media (max-width: 768px) {
+    .resources-section {
+        padding: 60px 0 !important;
+    }
+    
+    .resources-card {
+        border-radius: 16px;
+    }
+    
+    .resource-item {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 24px 20px;
+        gap: 16px;
+    }
+    
+    .resource-title {
+        font-size: 1rem;
+        line-height: 1.4;
+    }
+}
